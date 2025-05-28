@@ -113,7 +113,6 @@ struct PolygonSelection
     bool m_lastPointTemporary = false;
     bool m_finished = false;
     float m_mouseDownX, m_mouseDownY;
-    //osg::ref_ptr<osg::Camera> m_hudCamera;
 
     std::function<void(osg::Vec3)> m_pushVerticeCallback;
     std::function<void(osg::Vec3)> m_updateVerticeCallback;
@@ -123,8 +122,8 @@ struct PolygonSelection
 };
 
 
-PolygonSelectHandler::PolygonSelectHandler(osg::ref_ptr root):
-    m_root(root),
+PolygonSelectHandler::PolygonSelectHandler(osg::Camera hudCamera):
+    m_hudCamera(hudCamera),
     m_polygonSelection(new PolygonSelection),
     m_polygonSelectionVisualizer(new PolygonSelectionVisualizer),
     bool m_isSelect(false)
@@ -150,11 +149,12 @@ PolygonSelectHandler::PolygonSelectHandler(osg::ref_ptr root):
         {
             m_polygonSelectionVisualizer->m_polygonPonits->pop_back();
             m_polygonSelectionVisualizer->m_verticesLine->at(count - 2) =
-                m_polygonSelectionVisualizer->m_verticesLine->at(count - 1);
+            m_polygonSelectionVisualizer->m_verticesLine->at(count - 1);
             m_polygonSelectionVisualizer->m_verticesLine->pop_back();
             m_polygonSelectionVisualizer->Render();
         }
     }    
+    m_hudCamera->addChild(m_polygonSelectionVisualizer->m_geode);
 }
 
 PolygonSelectHandler::~PolygonSelectHandler() {}
