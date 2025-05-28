@@ -1,1 +1,1 @@
-add_subdirectory(Project1)
+add_subdirectory(PolygonSelect)

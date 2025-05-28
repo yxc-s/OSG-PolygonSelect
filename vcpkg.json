@@ -2,6 +2,7 @@
     "name": "vcpkg-deps",
     "version-string": "latest",
     "dependencies": [
-        "opencv"
+        "opencv",
+        "osg"
     ]
 }
