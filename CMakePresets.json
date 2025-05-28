@@ -1,0 +1,61 @@
+{
+    //该文件文件名必须为：CMakePresets.json
+    //使用方法：cmake --workflow --preset vs2022-x64-release-workflow
+    //或者先cmake --preset vs2022-x64  再 cmake --build --preset vs2022-x64-debug或者直接去.sin文件中打开构建
+    "version" : 8,//文件遵循的是 CMake Presets 文件格式的第 8 版本的规范
+    "cmakeMinimumRequired":{
+        "major": 3,
+        "minor": 21,
+        "patch": 0
+    },
+    "configurePresets":[
+        {
+            "name": "vs2022-x64",
+            "generator": "Visual Studio 17 2022",
+            "binaryDir": "${sourceDir}/builds/${presetName}",//sourceDir是内置变量，builds不存在会自己创建，presetName就是name
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+            }
+        }
+    ],
+    "buildPresets":[
+        {
+            "name": "vs2022-x64-debug",
+            "configuration": "Debug",
+            "configurePreset": "vs2022-x64"
+        },
+        {
+            "name": "vs2022-x64-release",
+            "configuration": "Release",
+            "configurePreset": "vs2022-x64"
+        }
+    ],
+    "workflowPresets":[
+        {
+            "name": "vs2022-x64-release-workflow",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "vs2022-x64"
+                },
+                {
+                    "type": "build",
+                    "name": "vs2022-x64-release"
+                }
+            ]
+        },
+        {
+            "name": "vs2022-x64-debug-workflow",
+            "steps":[
+                {
+                    "type": "configure",
+                    "name": "vs2022-x64"
+                },
+                {
+                    "type": "build",
+                    "name": "vs2022-x64-debug"
+                }
+            ]
+        }
+    ]
+}
