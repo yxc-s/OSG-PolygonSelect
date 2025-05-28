@@ -1,5 +1,3 @@
-#include <iostream>
-
 #include <PolygonSelectHandler.h>
 
 int main(){
@@ -20,15 +18,13 @@ int main(){
 	};
 
 	osg::Camera hudCamera = creatHudCamera();
-
 	root->addChild(hudCamera);
 
 	osgViewer::Viewer viewer;
 	viewer.setSceneData(root);
 
 	viewer.addEventHandler(new PolygonSelectHandler(hudCamera));
-	viewr.addEventHandler(new HudResizeHandler(hudCamera));
-
+	viewer.addEventHandler(new HudResizeHandler(hudCamera));
 
 	return viewer.run();
 }

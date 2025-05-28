@@ -17,3 +17,7 @@ set_target_properties(${TARGET_NAME} PROPERTIES FOLDER Apps)
 find_package(OpenCV REQUIRED)
 target_include_directories(${TARGET_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS})
 target_link_libraries(${TARGET_NAME} PRIVATE ${OpenCV_LIBS})
+
+find_package(OpenSceneGraph REQUIRED)
+target_include_directories(${TARGET_NAME} PRIVATE ${OPENSCENEGRAPH_INCLUDE_DIRS})
+target_link_libraries(${TARGET_NAME} PRIVATE ${OPENSCENEGRAPH_LIBS})
