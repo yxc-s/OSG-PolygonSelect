@@ -1,1 +1,2 @@
-# A C++ project template based on CMake
+# A PolygonSelect based on OSG & C++
+# 基于osg & C++ 的框选实现
