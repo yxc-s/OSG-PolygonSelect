@@ -27,7 +27,7 @@ int main(){
 	viewer.setSceneData(root);
 
 	viewer.addEventHandler(new PolygonSelectHandler(hudCamera));
-
+	viewr.addEventHandler(new HudResizeHandler(hudCamera));
 
 
 	return viewer.run();
