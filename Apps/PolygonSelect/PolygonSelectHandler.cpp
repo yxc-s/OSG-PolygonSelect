@@ -6,7 +6,7 @@
 #include <osg/BlendFunc>
 #include <osgViewer/Viewer>
 #include <functional>
-
+#include <iostream>
 struct PolygonSelectionVisualizer
 {
     PolygonSelectionVisualizer(): 
@@ -171,7 +171,8 @@ PolygonSelectHandler::~PolygonSelectHandler() {
 }
 
 bool PolygonSelectHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa) {
-    switch (ea.getEventType()) {
+	if (ea.getEventType() != 128) std::cout << "Event type: " << ea.getEventType() << std::endl;
+	switch (ea.getEventType()) {
         case osgGA::GUIEventAdapter::KEYDOWN:
             if (ea.getKey() == 's' || ea.getKey() == 'S') {
                 m_isSelect = !m_isSelect;
@@ -269,6 +270,6 @@ bool PolygonSelectHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIAc
 		}
         return true;
     }
-
+	return true;
     return false;
 }

@@ -9,7 +9,7 @@ class HudResizeHandler : public osgGA::GUIEventHandler {
 public:
     HudResizeHandler(osg::Camera* hudCamera) : m_hudCamera(hudCamera) {}
 
-    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter&) override {
+    bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa) override {
         if (!m_hudCamera) return false;
 
         if (ea.getEventType() == osgGA::GUIEventAdapter::RESIZE) {
