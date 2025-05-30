@@ -1,4 +1,6 @@
 #pragma once
+#include <osg/Camera>
+#include <osgGA/GUIEventHandler>
 
 struct PolygonSelectionVisualizer;
 struct PolygonSelection;
@@ -26,14 +28,14 @@ class PolygonSelectHandler : public osgGA::GUIEventHandler{
 public:
     PolygonSelectHandler() = delete;
     PolygonSelectHandler(osg::Camera* hudCamera);
-    ~PolygonSelectHandler();
+	~PolygonSelectHandler();
 
     virtual bool handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa) override;
 
 private:
     osg::ref_ptr<osg::Camera>                m_hudCamera;
-    osg::ref_ptr<PolygonSelection>           m_polygonSelection;
-    osg::ref_ptr<PolygonSelectionVisualizer> m_polygonSelectionVisualizer;
+    PolygonSelection*						 m_polygonSelection;
+    PolygonSelectionVisualizer*				 m_polygonSelectionVisualizer;
 
     bool m_isSelect;
 };

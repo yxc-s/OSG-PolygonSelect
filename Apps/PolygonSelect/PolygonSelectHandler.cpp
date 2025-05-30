@@ -1,4 +1,11 @@
 #include "PolygonSelectHandler.h"
+#include <osg/Geode>
+#include <osg/Geometry>
+#include <osg/Material>
+#include <osgUtil/Tessellator>
+#include <osg/BlendFunc>
+#include <osgViewer/Viewer>
+#include <functional>
 
 struct PolygonSelectionVisualizer
 {
@@ -43,7 +50,7 @@ struct PolygonSelectionVisualizer
         stateset->setAttributeAndModes(blend, osg::StateAttribute::ON);
 	}
     
-
+	~PolygonSelectionVisualizer() {}
 
 	void Render()
     {
@@ -108,6 +115,8 @@ struct PolygonSelectionVisualizer
 };
 struct PolygonSelection
 {
+	PolygonSelection() {}
+	~PolygonSelection() {}
     int m_leftMouseButton = osgGA::GUIEventAdapter::LEFT_MOUSE_BUTTON;
     bool m_gotFirstLocation = false;
     bool m_lastPointTemporary = false;
@@ -122,44 +131,46 @@ struct PolygonSelection
 };
 
 
-PolygonSelectHandler::PolygonSelectHandler(osg::Camera hudCamera):
+PolygonSelectHandler::PolygonSelectHandler(osg::Camera* hudCamera):
     m_hudCamera(hudCamera),
-    m_polygonSelection(new PolygonSelection),
-    m_polygonSelectionVisualizer(new PolygonSelectionVisualizer),
-    bool m_isSelect(false)
+	m_polygonSelection(new PolygonSelection{}),
+	m_polygonSelectionVisualizer(new PolygonSelectionVisualizer{}),
+    m_isSelect(false)
  {
 
-    m_polygonSelection->m_pushVerticeCallback = [&](const osg::Vec3& p) {
-        m_polygonSelectionVisualizer->m_verticesLine->push_back(p);
-        m_polygonSelectionVisualizer->m_polygonPonits->push_back(osg::Vec2(p[0], p[1]));
-        m_polygonSelectionVisualizer->Render();
-    }
-    m_polygonSelection->m_updateVerticeCallback = [&](const osg::Vec3& p) {
-        m_polygonSelectionVisualizer->m_verticesLine->back() = p;
-        m_polygonSelectionVisualizer->m_polygonPonits->back() = osg::Vec2(p[0], p[1]);
-        m_polygonSelectionVisualizer->Render();
-    }    
-    m_polygonSelection->m_clearCallback = [&]() {
-        m_polygonSelectionVisualizer->Clear();
-        m_polygonSelectionVisualizer->Render();
-    }    
-    m_polygonSelection->m_revokeCallback = [&]() {
-        size_t count = m_polygonSelectionVisualizer->m_polygonPonits->size();
-        if (count > 2)
-        {
-            m_polygonSelectionVisualizer->m_polygonPonits->pop_back();
-            m_polygonSelectionVisualizer->m_verticesLine->at(count - 2) =
-            m_polygonSelectionVisualizer->m_verticesLine->at(count - 1);
-            m_polygonSelectionVisualizer->m_verticesLine->pop_back();
-            m_polygonSelectionVisualizer->Render();
-        }
-    }    
+	m_polygonSelection->m_pushVerticeCallback = [&](const osg::Vec3& p) {
+		m_polygonSelectionVisualizer->m_verticesLine->push_back(p);
+		m_polygonSelectionVisualizer->m_polygonPonits->push_back(osg::Vec2(p[0], p[1]));
+		m_polygonSelectionVisualizer->Render();
+	};
+	m_polygonSelection->m_updateVerticeCallback = [&](const osg::Vec3& p) {
+		m_polygonSelectionVisualizer->m_verticesLine->back() = p;
+		m_polygonSelectionVisualizer->m_polygonPonits->back() = osg::Vec2(p[0], p[1]);
+		m_polygonSelectionVisualizer->Render();
+	};
+	m_polygonSelection->m_clearCallback = [&]() {
+		m_polygonSelectionVisualizer->Clear();
+		m_polygonSelectionVisualizer->Render();
+	};
+	m_polygonSelection->m_revokeCallback = [&]() {
+		size_t count = m_polygonSelectionVisualizer->m_polygonPonits->size();
+		if (count > 2) {
+			m_polygonSelectionVisualizer->m_polygonPonits->pop_back();
+			m_polygonSelectionVisualizer->m_verticesLine->at(count - 2) =
+				m_polygonSelectionVisualizer->m_verticesLine->at(count - 1);
+			m_polygonSelectionVisualizer->m_verticesLine->pop_back();
+			m_polygonSelectionVisualizer->Render();
+		}
+	};
     m_hudCamera->addChild(m_polygonSelectionVisualizer->m_geode);
 }
 
-PolygonSelectHandler::~PolygonSelectHandler() {}
+PolygonSelectHandler::~PolygonSelectHandler() {
+	delete m_polygonSelection;
+	delete m_polygonSelectionVisualizer;
+}
 
-PolygonSelectHandler::handle(const osgGA::EventAdapter& ea, osgGA::GUIActionAdapter) {
+bool PolygonSelectHandler::handle(const osgGA::GUIEventAdapter& ea, osgGA::GUIActionAdapter& aa) {
     switch (ea.getEventType()) {
         case osgGA::GUIEventAdapter::KEYDOWN:
             if (ea.getKey() == 's' || ea.getKey() == 'S') {

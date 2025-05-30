@@ -1,10 +1,12 @@
-#include <PolygonSelectHandler.h>
+#include "PolygonSelectHandler.h"
+#include <osg/Camera>
+#include <osgViewer/Viewer>
 
 int main(){
 	osg::ref_ptr<osg::Group> root = new osg::Group();
 
 	auto createHudCamera = []() {
-		hudCamera = new osg::Camera;
+		auto hudCamera = new osg::Camera;
 		hudCamera->setProjectionMatrix(osg::Matrix::ortho2D(0, 640, 0, 480));
 		hudCamera->setReferenceFrame(osg::Transform::ABSOLUTE_RF);
 		hudCamera->setViewMatrix(osg::Matrix::identity());
@@ -17,7 +19,7 @@ int main(){
 		return hudCamera;
 	};
 
-	osg::Camera hudCamera = creatHudCamera();
+	osg::Camera* hudCamera = createHudCamera();
 	root->addChild(hudCamera);
 
 	osgViewer::Viewer viewer;

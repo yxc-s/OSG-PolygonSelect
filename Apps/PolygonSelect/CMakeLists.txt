@@ -15,9 +15,20 @@ add_executable(${TARGET_NAME} ${CPP_SOURCE_FILES} ${CPP_HEAD_FILES})
 set_target_properties(${TARGET_NAME} PROPERTIES FOLDER Apps)
 
 find_package(OpenCV REQUIRED)
-target_include_directories(${TARGET_NAME} PRIVATE ${OpenCV_INCLUDE_DIRS})
-target_link_libraries(${TARGET_NAME} PRIVATE ${OpenCV_LIBS})
+#OSG是模块化的库，默认find_package不找到所有子模块，需要自己指定
+find_package(OpenSceneGraph REQUIRED COMPONENTS osgUtil osgDB osgText osgGA osgFX osgSim osgViewer osgManipulator)
 
-find_package(OpenSceneGraph REQUIRED)
-target_include_directories(${TARGET_NAME} PRIVATE ${OPENSCENEGRAPH_INCLUDE_DIRS})
-target_link_libraries(${TARGET_NAME} PRIVATE ${OPENSCENEGRAPH_LIBS})
+
+target_include_directories(
+    ${TARGET_NAME} 
+    PRIVATE 
+    ${OpenCV_INCLUDE_DIRS}
+    ${OPENSCENEGRAPH_INCLUDE_DIRS}
+)
+
+target_link_libraries(
+    ${TARGET_NAME} 
+    PRIVATE 
+    ${OpenCV_LIBS}
+    ${OPENSCENEGRAPH_LIBRARIES}
+)
